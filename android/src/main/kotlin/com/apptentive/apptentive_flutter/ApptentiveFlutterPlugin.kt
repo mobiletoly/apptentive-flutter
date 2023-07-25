@@ -92,6 +92,7 @@ class ApptentiveFlutterPlugin : FlutterPlugin, MethodCallHandler, ActivityAware 
     else Apptentive.registerApptentiveActivityInfoCallback(activityInfo)
 
     when (call.method) {
+      "isRegistered" -> isRegistered(call, result)
       "register" -> register(call, result)
       "engage" -> engage(call, result)
       "showMessageCenter" -> showMessageCenter(result)
@@ -115,6 +116,10 @@ class ApptentiveFlutterPlugin : FlutterPlugin, MethodCallHandler, ActivityAware 
 // endregion
 
 // region Apptentive plugin methods
+
+  private fun isRegistered(call: MethodCall, result: Result) {
+    result.success(isApptentiveRegistered)
+  }
 
   private fun register(call: MethodCall, result: Result) {
     val configuration = unpackConfiguration(call.argument("configuration")!!)
