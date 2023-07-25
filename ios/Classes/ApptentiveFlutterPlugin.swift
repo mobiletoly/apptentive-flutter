@@ -109,7 +109,9 @@ public class ApptentiveFlutterPlugin: NSObject, FlutterApplicationLifeCycleDeleg
     ApptentiveLogger.logLevel = logLevel
 
     // Register Apptentive using credentials
-    if (!isApptentiveRegistered) {
+    if (isApptentiveRegistered) {
+      result(true)
+    } else {
       Apptentive.shared.register(with: appCredentials, completion: { (completionResult) -> Void in
         switch completionResult {
         case .success:

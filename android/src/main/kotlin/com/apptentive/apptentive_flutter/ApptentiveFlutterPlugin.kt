@@ -118,7 +118,7 @@ class ApptentiveFlutterPlugin : FlutterPlugin, MethodCallHandler, ActivityAware 
 // region Apptentive plugin methods
 
   private fun isRegistered(call: MethodCall, result: Result) {
-    result.success(isApptentiveRegistered)
+    result.success(Apptentive.registered)
   }
 
   private fun register(call: MethodCall, result: Result) {
