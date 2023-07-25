@@ -66,6 +66,12 @@ class ApptentiveFlutter {
     return null;
   }
 
+  // Returns true if Apptentive is already registered
+  static Future<bool> isRegistered() async {
+    final bool registered = await _channel.invokeMethod('isRegistered');
+    return registered;
+  }
+
   // Register the Apptentive SDK with the Apptentive Configuration
   static Future<bool> register(ApptentiveConfiguration configuration) async {
     final bool registered = await _channel.invokeMethod('register', {

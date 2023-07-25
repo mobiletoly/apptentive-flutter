@@ -8,6 +8,7 @@ public class ApptentiveFlutterPlugin: NSObject, FlutterApplicationLifeCycleDeleg
   private static let errorCode = "Apptentive Error"
   private var observation: NSKeyValueObservation?
   private let channel: FlutterMethodChannel
+  private var isApptentiveRegistered: Bool = false
 
   // Register the method channel and plugin instance
   public static func register(with registrar: FlutterPluginRegistrar) {
@@ -20,6 +21,7 @@ public class ApptentiveFlutterPlugin: NSObject, FlutterApplicationLifeCycleDeleg
   // Handle the flutter method call, delegating it based on the method name
   public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
     switch call.method {
+    case "isRegistered": handleIsRegisteredCall(call, result)
     case "register": handleRegisterCall(call, result)
     case "engage": handleEngageCall(call, result)
     case "showMessageCenter": handleShowMessageCenter(call, result)
@@ -79,6 +81,11 @@ public class ApptentiveFlutterPlugin: NSObject, FlutterApplicationLifeCycleDeleg
 
   // MARK: - Apptentive Plugin Methods
 
+  // Check if Apptentive is registered
+  private func handleIsRegisteredCall(_ call: FlutterMethodCall, _ result: @escaping FlutterResult) {
+    result(isApptentiveRegistered)
+  }
+
   // Register the Apptentive iOS SDK
   private func handleRegisterCall(_ call: FlutterMethodCall, _ result: @escaping FlutterResult) {
     guard let callArguments = call.arguments as? [String: Any] else {
@@ -102,14 +109,17 @@ public class ApptentiveFlutterPlugin: NSObject, FlutterApplicationLifeCycleDeleg
     ApptentiveLogger.logLevel = logLevel
 
     // Register Apptentive using credentials
-    Apptentive.shared.register(with: appCredentials, completion: { (completionResult) -> Void in
+    if (!isApptentiveRegistered) {
+      Apptentive.shared.register(with: appCredentials, completion: { (completionResult) -> Void in
         switch completionResult {
         case .success:
-            result(true)
+          self.isApptentiveRegistered = true
+          result(true)
         case .failure(let error):
           result(FlutterError.init(code: Self.errorCode, message: "Apptentive SDK failed to register.", details: error.localizedDescription))
         }
-    })
+      })
+    }
   }
 
   // Engage an Apptentive event with even_name, launching any valid interactions tied to the event
